@@ -5,128 +5,163 @@ class ServiceMTK {
 protected:
     string ServicePack;
     double BasicFee, PTsupport;
+
 public:
-    ServiceMTK(){}
+    ServiceMTK() : BasicFee(0), PTsupport(0) {}
     virtual void EnterInfo() = 0;
-    virtual void DisplayInfo() = 0;
-    virtual double TotalMoney() = 0;
-    virtual ~ServiceMTK(){}
+    virtual void DisplayInfo() const = 0;
+    virtual double TotalMoney() const = 0;
+    virtual ~ServiceMTK() {}
 };
 
 class Premium : public ServiceMTK {
-private:
-    double ClassFee, SaunaService;
 public:
-    Premium() : ServiceMTK(), ClassFee(0), SaunaService(0) {
+    Premium() {
         ServicePack = "Premium";
         BasicFee = 1000;
         PTsupport = 0;
     }
+
     void EnterInfo() override {
         cout << "Premium Package: Lop hoc duoc mien phi nen khong can nhap so luong.\n";
     }
-    double TotalMoney() override {
+
+    double TotalMoney() const override {
         return BasicFee;
     }
-    void DisplayInfo() override {
-        cout << ServicePack << " Phi Co Ban: " << BasicFee << " Chi Phi Lop Hoc: " << ClassFee << " Dich Vu Xong Hoi: " << SaunaService << " Ho Tro PT: " << PTsupport << endl;
+
+    void DisplayInfo() const override {
+        cout << setw(15) << left << ServicePack
+             << " | Phi Co Ban: " << setw(5) << BasicFee
+             << " | Chi Phi Lop Hoc: 0 | Dich Vu Xong Hoi: 0 | Ho Tro PT: " << PTsupport << endl;
     }
 };
 
 class Basic : public ServiceMTK {
 private:
     double Quantity, ClassFee;
+
 public:
-    Basic() : ServiceMTK(), Quantity(0), ClassFee(0) {
+    Basic() : Quantity(0), ClassFee(0) {
         ServicePack = "Basic";
         BasicFee = 500;
         PTsupport = 100;
     }
+
     void EnterInfo() override {
         cout << "Enter Quantity: ";
         cin >> Quantity;
         cin.ignore();
         ClassFee = 100 * Quantity;
     }
-    double TotalMoney() override {
+
+    double TotalMoney() const override {
         return BasicFee + PTsupport + ClassFee;
     }
-    void DisplayInfo() override {
-        cout << ServicePack << " Phi Co Ban: " << BasicFee << " Chi Phi Lop Hoc: " << ClassFee << " Ho Tro PT: " << PTsupport << endl;
+
+    void DisplayInfo() const override {
+        cout << setw(15) << left << ServicePack
+             << " | Phi Co Ban: " << setw(5) << BasicFee
+             << " | Chi Phi Lop Hoc: " << setw(5) << ClassFee
+             << " | Ho Tro PT: " << PTsupport << endl;
     }
 };
 
 class Non_Member : public ServiceMTK {
 public:
-    Non_Member() : ServiceMTK(){
-        ServicePack = "Non - Member";
+    Non_Member() {
+        ServicePack = "Non-Member";
         BasicFee = 200;
         PTsupport = 200;
     }
+
     void EnterInfo() override {}
-    double TotalMoney() override {
+
+    double TotalMoney() const override {
         return BasicFee + PTsupport;
     }
-    void DisplayInfo() override {
-        cout << ServicePack << " Phi Co Ban: " << BasicFee << " Ho Tro PT: " << PTsupport << endl;
+
+    void DisplayInfo() const override {
+        cout << setw(15) << left << ServicePack
+             << " | Phi Co Ban: " << setw(5) << BasicFee
+             << " | Ho Tro PT: " << PTsupport << endl;
     }
 };
 
 class Customer {
 private:
-    ServiceMTK* DichVu;     
+    ServiceMTK* DichVu;
     string Hoten, CMND, LuaChon;
     double TotalMoney;
+
 public:
-    Customer() : DichVu(nullptr), TotalMoney(0){}
-    double getTotalMoney(){
-        return this->TotalMoney;
+    Customer() : DichVu(nullptr), TotalMoney(0) {}
+
+    double getTotalMoney() const {
+        return TotalMoney;
     }
-    void EnterInfo(){
+
+    void EnterInfo() {
         cout << "Nhap Ho Ten Khach Hang: ";
         getline(cin, Hoten);
         cout << "Nhap CMND Khach Hang: ";
         getline(cin, CMND);
-        cout << "Nhap Lua Chon Cua Khach Hang: ";
+        cout << "Nhap Lua Chon Cua Khach Hang (Premium/Basic/Non-Member): ";
         getline(cin, LuaChon);
-        if (LuaChon == "Premium") DichVu = new Premium();
-        else if (LuaChon == "Basic") DichVu = new Basic();
-        else if (LuaChon == "Non - Member") DichVu = new Non_Member();
+
+        if (LuaChon == "Premium") 
+            DichVu = new Premium();
+        else if (LuaChon == "Basic") 
+            DichVu = new Basic();
+        else if (LuaChon == "Non-Member") 
+            DichVu = new Non_Member();
+        else {
+            cout << "Lua chon khong hop le! Mac dinh chon Non-Member.\n";
+            DichVu = new Non_Member();
+        }
+
         DichVu->EnterInfo();
         TotalMoney = DichVu->TotalMoney();
     }
-    void DisplayInfo(){
-        cout << "Ho Ten: " << Hoten << " CMND: " << CMND << " ";
+
+    void DisplayInfo() const {
+        cout << setw(20) << left << Hoten
+             << " | CMND: " << setw(12) << CMND << " | ";
         DichVu->DisplayInfo();
     }
-    ~Customer(){
-        DichVu = nullptr;
+
+    ~Customer() {
+        delete DichVu;
     }
 };
 
-int main(){
+int main() {
     int Quantity;
     cout << "Nhap So Luong Khach Hang: ";
     cin >> Quantity;
     cin.ignore();
-    vector<Customer> Customers;
-    for(int i = 0; i<Quantity; i++){
-        Customer Temp;
-        Temp.EnterInfo();
-        Customers.push_back(Temp);
+
+    vector<Customer> Customers(Quantity);
+    for (int i = 0; i < Quantity; i++) {
+        cout << "\nNhap thong tin khach hang thu " << i + 1 << ":\n";
+        Customers[i].EnterInfo();
     }
-    for (Customer& cust : Customers){
+
+    cout << "\nDanh sach khach hang:\n";
+    for (const auto& cust : Customers) {
         cust.DisplayInfo();
     }
+
     if (!Customers.empty()) {
-        sort(Customers.begin(), Customers.end(), [](Customer x, Customer y) {
+        sort(Customers.begin(), Customers.end(), [](const Customer& x, const Customer& y) {
             return x.getTotalMoney() > y.getTotalMoney();
         });
-        double maxTotal = Customers[0].getTotalMoney(); 
+
+        double maxTotal = Customers[0].getTotalMoney();
         cout << "\nKhach hang chi tieu nhieu nhat:\n";
-        for (Customer cust : Customers) {
+        for (const auto& cust : Customers) {
             if (cust.getTotalMoney() == maxTotal) {
-                cust.DisplayInfo(); 
+                cust.DisplayInfo();
             }
         }
     } else {
