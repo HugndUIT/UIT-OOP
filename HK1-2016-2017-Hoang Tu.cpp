@@ -2,112 +2,117 @@
 using namespace std;
 
 class Prince {
-    private:
-        double Money, IQ, Power;
-    public:
-        void setMoney(double Money) {
-            this->Money = Money;
-        }
-        void setPower(double Power) {
-            this->Power = Power;
-        }
-        double getMoney() {
-            return this->Money;
-        }
-        double getPower() {
-            return this->Power;
-        }
-        double getIQ() {
-            return this->IQ;
-        }
-        void EnterInfo() {
-            cout << "Nhập thông tin Hoàng tử (Tiền TríTuệ SứcMạnh): ";
-            cin >> Money >> IQ >> Power;
-        }
-        void DisplayInfo() {
-            cout << "Thông tin Hoàng tử sau khi vượt cổng:\n";
-            cout << "Tiền: " << Money << ", Trí tuệ: " << IQ << ", Sức mạnh: " << Power << endl;
-        }
+private:
+    double Money, IQ, Power;
+
+public:
+    void setMoney(double Money) { this->Money = Money; }
+    void setPower(double Power) { this->Power = Power; }
+    
+    double getMoney() const { return Money; }
+    double getPower() const { return Power; }
+    double getIQ() const { return IQ; }
+
+    void EnterInfo() {
+        cout << "Nhập thông tin Hoàng tử (Tiền TríTuệ SứcMạnh): ";
+        cin >> Money >> IQ >> Power;
+    }
+
+    void DisplayInfo() const {
+        cout << "Thông tin Hoàng tử sau khi vượt cổng:\n"
+             << "Tiền: " << Money << " | Trí tuệ: " << IQ << " | Sức mạnh: " << Power << endl;
+    }
 };
 
 class Gate {
-    protected:
-        string Keeper;
-    public:
-        virtual bool PassGate(Prince& HoangTu) = 0;
-        virtual void EnterInfo() = 0;
-        virtual void DisplayInfo() = 0;
-        virtual ~Gate() {}
+protected:
+    string Keeper;
+
+public:
+    virtual bool PassGate(Prince& HoangTu) = 0;
+    virtual void EnterInfo() = 0;
+    virtual void DisplayInfo() const = 0;
+    virtual ~Gate() {}
 };
 
 class BusinessGate : public Gate {
-    private:
-        double Price, Quantity;
-    public:
-        BusinessGate() {
-            Keeper = "Merchant";
+private:
+    double Price, Quantity;
+
+public:
+    BusinessGate() { Keeper = "Merchant"; }
+
+    bool PassGate(Prince& HoangTu) override {
+        double TotalCost = Price * Quantity;
+        if (HoangTu.getMoney() >= TotalCost) {
+            HoangTu.setMoney(HoangTu.getMoney() - TotalCost);
+            return true;
         }
-        bool PassGate(Prince& HoangTu) override {
-            if (HoangTu.getMoney() >= Price * Quantity) {
-                HoangTu.setMoney(HoangTu.getMoney() - Price * Quantity);
-                return true;
-            }
-            return false;
-        }
-        void EnterInfo() override {
-            cout << "Nhập thông tin cổng giao thương (Giá một món hàng, Số lượng hàng): ";
-            cin >> Price >> Quantity;
-        }
-        void DisplayInfo() override {
-            cout << "Cổng Giao Thương - Người gác: " << Keeper << ", Giá: " << Price << ", Số lượng: " << Quantity << endl;
-        }
+        return false;
+    }
+
+    void EnterInfo() override {
+        cout << "Nhập thông tin cổng giao thương (Giá một món hàng, Số lượng hàng): ";
+        cin >> Price >> Quantity;
+    }
+
+    void DisplayInfo() const override {
+        cout << "Cổng Giao Thương | Người gác: " << Keeper
+             << " | Giá: " << Price << " | Số lượng: " << Quantity << endl;
+    }
 };
 
 class AcademicGate : public Gate {
-    private:
-        double IQquestion;
-    public:
-        AcademicGate() {
-            Keeper = "Sage";
-        }
-        bool PassGate(Prince& HoangTu) override {
-            return HoangTu.getIQ() >= IQquestion;
-        }
-        void EnterInfo() override {
-            cout << "Nhập thông tin cổng học thuật (Chỉ số IQ yêu cầu): ";
-            cin >> IQquestion;
-        }
-        void DisplayInfo() override {
-            cout << "Cổng Học Thuật - Người gác: " << Keeper << ", IQ yêu cầu: " << IQquestion << endl;
-        }
+private:
+    double IQquestion;
+
+public:
+    AcademicGate() { Keeper = "Sage"; }
+
+    bool PassGate(Prince& HoangTu) override {
+        return HoangTu.getIQ() >= IQquestion;
+    }
+
+    void EnterInfo() override {
+        cout << "Nhập thông tin cổng học thuật (Chỉ số IQ yêu cầu): ";
+        cin >> IQquestion;
+    }
+
+    void DisplayInfo() const override {
+        cout << "Cổng Học Thuật | Người gác: " << Keeper
+             << " | IQ yêu cầu: " << IQquestion << endl;
+    }
 };
 
 class PowerGate : public Gate {
-    private:
-        double Strength;
-    public:
-        PowerGate() {
-            Keeper = "Warrior";
+private:
+    double Strength;
+
+public:
+    PowerGate() { Keeper = "Warrior"; }
+
+    bool PassGate(Prince& HoangTu) override {
+        if (HoangTu.getPower() >= Strength) {
+            HoangTu.setPower(HoangTu.getPower() - Strength);
+            return true;
         }
-        bool PassGate(Prince& HoangTu) override {
-            if (HoangTu.getPower() >= Strength) {
-                HoangTu.setPower(HoangTu.getPower() - Strength);
-                return true;
-            }
-            return false;
-        }
-        void EnterInfo() override {
-            cout << "Nhập thông tin cổng sức mạnh (Chỉ số sức mạnh của dũng sĩ): ";
-            cin >> Strength;
-        }
-        void DisplayInfo() override {
-            cout << "Cổng Sức Mạnh - Người gác: " << Keeper << ", Sức mạnh yêu cầu: " << Strength << endl;
-        }
+        return false;
+    }
+
+    void EnterInfo() override {
+        cout << "Nhập thông tin cổng sức mạnh (Chỉ số sức mạnh của dũng sĩ): ";
+        cin >> Strength;
+    }
+
+    void DisplayInfo() const override {
+        cout << "Cổng Sức Mạnh | Người gác: " << Keeper
+             << " | Sức mạnh yêu cầu: " << Strength << endl;
+    }
 };
 
-void Display(vector<Gate*> Gates) {
-    for (Gate* x : Gates) {
-        x->DisplayInfo();
+void Display(const vector<Gate*>& Gates) {
+    for (const Gate* gate : Gates) {
+        gate->DisplayInfo();
     }
 }
 
@@ -130,16 +135,17 @@ int main() {
         else if (Type == 2) Temp = new AcademicGate();
         else if (Type == 3) Temp = new PowerGate();
         
-        Temp->EnterInfo();
-        Gates.push_back(Temp);
+        if (Temp) {
+            Temp->EnterInfo();
+            Gates.push_back(Temp);
+        }
     }
 
-    bool SavedPrincess = false;
+    bool SavedPrincess = true;
     for (size_t i = 0; i < Gates.size(); ) {
         if (Gates[i]->PassGate(HoangTu)) {
             delete Gates[i];
             Gates.erase(Gates.begin() + i);
-            SavedPrincess = true;
         } else {
             SavedPrincess = false;
             break;
@@ -148,13 +154,15 @@ int main() {
 
     if (SavedPrincess) {
         HoangTu.DisplayInfo();
-        cout << "Hoàng tử đã cứu được công chúa thành công!" << endl;
+        cout << "Hoàng tử đã cứu được công chúa thành công!\n";
     } else {
-        cout << "Hoàng tử không thể cứu công chúa. Các cổng chưa qua:" << endl;
+        cout << "Hoàng tử không thể cứu công chúa. Các cổng chưa qua:\n";
         Display(Gates);
     }
 
-    for (Gate* x : Gates) {
-        delete x;
+    for (Gate* gate : Gates) {
+        delete gate;
     }
+
+    return 0;
 }
