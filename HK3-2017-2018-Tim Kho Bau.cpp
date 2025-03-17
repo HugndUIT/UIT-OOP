@@ -26,12 +26,10 @@ public:
             cin >> ChiSoTao;
         } while (ChiSoTao < 0);
     }
-
     bool VuotAi(vector<int> ChiSo, int) override {
         for (size_t i = 0; i < ChiSo.size(); i++) {
             ChiSo[i] += ChiSoTao;
         }
-
         for (size_t i = 0; i < ChiSo.size(); i++) {
             if (ChiSo[i] <= Chong[i]) return false;
         }
@@ -42,7 +40,6 @@ public:
 class DuongHamNui : public ChuongNgaiVat {
 private:
     int ChieuCaoDuongHam;
-
 public:
     void EnterInfo() override {
         do {
@@ -50,7 +47,6 @@ public:
             cin >> ChieuCaoDuongHam;
         } while (ChieuCaoDuongHam < 0);
     }
-
     bool VuotAi(vector<int>, int ChieuCaoNguoiChoi) override {
         return ChieuCaoNguoiChoi <= ChieuCaoDuongHam;
     }
@@ -59,7 +55,6 @@ public:
 class QuaiVat : public ChuongNgaiVat {
 private:
     vector<int> SucManh;
-
 public:
     void EnterInfo() override {
         int n;
@@ -69,7 +64,6 @@ public:
             SucManh.push_back(n);
         }
     }
-
     bool VuotAi(vector<int> ChiSo, int) override {
         int NguoiChoiWin = 0, QuaiVatWin = 0;
 
@@ -88,7 +82,6 @@ private:
     vector<int> ChiSoNhay;
     vector<int> ChiSoSucManh;
     int ChieuCao;
-
 public:
     void EnterInfo() {
         int n, m;
@@ -108,7 +101,6 @@ public:
             cin >> ChieuCao;
         } while (ChieuCao < 0);
     }
-
     vector<int> getChiSoNhay() { return ChiSoNhay; }
     vector<int> getChiSoSucManh() { return ChiSoSucManh; }
     int getChieuCao() { return ChieuCao; }
@@ -121,7 +113,6 @@ int main() {
         cout << "Nhap so luong chuong ngai vat: ";
         cin >> N;
     } while (N < 1);
-
     vector<ChuongNgaiVat*> v;
     for (int i = 0; i < N; i++) {
         int Type;
@@ -129,7 +120,6 @@ int main() {
             cout << "\nChon loai chuong ngai vat (1: Khu Rung Chong, 2: Duong Ham Nui, 3: Quai Vat): ";
             cin >> Type;
         } while (Type < 1 || Type > 3);
-
         ChuongNgaiVat* Temp = nullptr;
         if (Type == 1) Temp = new KhuRungChong();
         else if (Type == 2) Temp = new DuongHamNui();
@@ -138,10 +128,8 @@ int main() {
         Temp->EnterInfo();
         v.push_back(Temp);
     }
-
     NguoiChoi Player;
     Player.EnterInfo();
-
     bool Win = true;
     for (ChuongNgaiVat* x : v) {
         if (dynamic_cast<KhuRungChong*>(x)) {
@@ -161,14 +149,12 @@ int main() {
             }
         }
     }
-
     cout << "\n=== KET QUA CUOC CHOI ===\n";
     if (Win) {
         cout << "Nguoi choi tim thay kho bau!\n";
     } else {
         cout << "Nguoi choi da that bai!\n";
     }
-
     for (ChuongNgaiVat* x : v) {
         delete x;
     }
