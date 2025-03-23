@@ -44,7 +44,6 @@ public:
 class BloodGroupManager {
 private:
     vector<Person> people;
-
     bool isValidChildABO(const string& fatherABO, const string& motherABO, const string& childABO) const {
         string fABO = fatherABO, mABO = motherABO, cABO = childABO;
         transform(fABO.begin(), fABO.end(), fABO.begin(), ::toupper);
@@ -95,7 +94,6 @@ private:
             cout << "Khong co bat dong Rh giua me va con.\n";
         }
     }
-
 public:
     void addPerson(const Person& person) {
         people.push_back(person);
@@ -111,7 +109,6 @@ public:
             people[i].display();
         }
     }
-
     void checkFamily(int fatherIdx, int motherIdx, int childIdx) const {
         if (fatherIdx < 0 || fatherIdx >= static_cast<int>(people.size()) ||
             motherIdx < 0 || motherIdx >= static_cast<int>(people.size()) ||
@@ -145,7 +142,6 @@ public:
         }
         checkRhIncompatibility(mother.getBloodType().getRh(), child.getBloodType().getRh());
     }
-
     void checkDonation(int receiverIdx) const {
         if (receiverIdx < 0 || receiverIdx >= static_cast<int>(people.size())) {
             cout << "Chi so khong hop le!\n";
@@ -167,7 +163,6 @@ public:
             cout << "Khong co nguoi nao co the cho mau.\n";
         }
     }
-
     void inputPeople() {
         int n;
         cout << "Nhap so luong nguoi: ";
@@ -217,7 +212,6 @@ public:
 
 int main() {
     BloodGroupManager manager;
-
     cout << "Nhap danh sach nguoi:\n";
     manager.inputPeople();
     manager.displayPeople();
